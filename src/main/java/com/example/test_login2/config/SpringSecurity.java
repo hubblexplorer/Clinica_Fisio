@@ -32,9 +32,9 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").hasRole("ADMIN")
                                 .requestMatchers("/").permitAll()
-                                .requestMatchers("/home").hasAnyRole("ADMIN","USER")
+                                .requestMatchers("/home").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
                                 .requestMatchers("/users").hasRole("ADMIN")
-                                .anyRequest().denyAll()
+                                //.anyRequest().denyAll()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")

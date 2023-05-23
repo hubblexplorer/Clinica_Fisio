@@ -1,6 +1,5 @@
 package com.example.test_login2.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto
+public class FuncionarioDto
 {
     private Long id;
     @NotEmpty(message = "Name should not be empty")

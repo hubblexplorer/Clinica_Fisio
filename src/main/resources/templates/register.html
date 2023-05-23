@@ -43,7 +43,7 @@
                 method="post"
                 role="form"
                 th:action="@{/register/save}"
-                th:object="${user}"
+                th:object="${Funcionario}"
         >
           <div class="form-group mb-3">
             <label class="form-label">Name</label>
@@ -72,6 +72,16 @@
             <p th:errors = "*{password}" class="text-danger"
                th:if="${#fields.hasErrors('password')}"></p>
           </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Role</label>
+            <br>
+            <select name="Role" id="role" class="form-control" th:field="*{role}">
+              <option value="ROLE_MEDICO">Medico</option>
+              <option value="ROLE_RECECIONISTA">Rececionista</option>
+            </select>
+          </div>
+
+
           <div class="form-group">
             <button class="btn btn-primary" type="submit">Register</button>
           </div>
