@@ -1,9 +1,13 @@
 package com.example.test_login2.controller;
 
+import com.example.test_login2.AgendaWeek;
 import com.example.test_login2.dto.FuncionarioDto;
+import com.example.test_login2.entity.Agenda;
 import com.example.test_login2.entity.Funcionario;
+import com.example.test_login2.repository.AgendaRepository;
 import com.example.test_login2.service.FuncionarioService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -18,8 +26,12 @@ public class AuthController {
 
     private FuncionarioService funcionarioService;
 
+    @Autowired
+    private AgendaRepository agendaRepository;
+
     public AuthController(FuncionarioService funcionarioService) {
         this.funcionarioService = funcionarioService;
+
     }
     // handler method to handle home page request
     @GetMapping("/home")
