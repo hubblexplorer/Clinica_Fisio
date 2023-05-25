@@ -69,4 +69,33 @@ public class AuthController {
     public String login(){
         return "login";
     }
+    
+    @GetMapping("/agenda")
+    public String agenda(Model model){
+        AgendaWeek week = new AgendaWeek();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<Agenda> AgendaWeek = agendaRepository.findAgendaByDateBetween(java.sql.Date.valueOf(dateFormat.format(week.FirstWeekDay())), java.sql.Date.valueOf(dateFormat.format(week.LastWeekDay())));
+        ArrayList<Date> DayList = new ArrayList<>();
+        ArrayList<Time> TimeList = new ArrayList<>();
+        ArrayList<String> CodeList = new ArrayList<>();
+        for(Agenda a : AgendaWeek) {
+            DayList.add(a.getDate());
+            TimeList.add(a.getTime());
+            CodeList.add("a" + week.DayWeek(a.getDate()) + String.valueOf(a.getTime().getHours()));
+        }
+
+        for (int day = 2; day <= 6; day++){
+            for (int hour = 9; hour <= 17; hour++){
+                String HTMLAtributeName = "a" + String.valueOf(day) + String.valueOf(hour);
+                if (CodeList.contains(HTMLAtributeName))    model.addAttribute(HTMLAtributeName, "X");
+                else                                        model.addAttribute(HTMLAtributeName, " ");
+            }
+        }
+
+        //System.out.println(DayList);
+        //System.out.println(TimeList);
+        //System.out.println(CodeList);
+
+        return "agenda";
+    }
 }
