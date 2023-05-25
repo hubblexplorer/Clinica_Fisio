@@ -34,7 +34,7 @@ public class SpringSecurity {
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/home").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
                                 .requestMatchers("/users").hasRole("ADMIN")
-                                .requestMatchers("/agenda").hasAnyRole("ADMIN","RECECIONISTA")
+                                .requestMatchers("/agenda").permitAll()
                                 .anyRequest().denyAll()
                 ).formLogin(
                         form -> form

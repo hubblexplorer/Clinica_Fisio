@@ -1,6 +1,6 @@
 package com.example.test_login2.controller;
 
-import com.example.test_login2.AgendaWeek;
+
 import com.example.test_login2.dto.FuncionarioDto;
 import com.example.test_login2.entity.Agenda;
 import com.example.test_login2.entity.Funcionario;
@@ -87,6 +87,7 @@ public class AuthController {
         AgendaWeek week = new AgendaWeek();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<Agenda> AgendaWeek = agendaRepository.findAgendaByDateBetween(java.sql.Date.valueOf(dateFormat.format(week.FirstWeekDay())), java.sql.Date.valueOf(dateFormat.format(week.LastWeekDay())));
+        System.out.println(AgendaWeek);
         ArrayList<Date> DayList = new ArrayList<>();
         ArrayList<Time> TimeList = new ArrayList<>();
         ArrayList<String> CodeList = new ArrayList<>();
@@ -104,9 +105,9 @@ public class AuthController {
             }
         }
 
-        //System.out.println(DayList);
-        //System.out.println(TimeList);
-        //System.out.println(CodeList);
+        System.out.println(DayList);
+        System.out.println(TimeList);
+        System.out.println(CodeList);
 
         return "agenda";
     }

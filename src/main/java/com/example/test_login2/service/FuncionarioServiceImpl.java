@@ -2,7 +2,9 @@ package com.example.test_login2.service;
 
 import com.example.test_login2.dto.FuncionarioDto;
 import com.example.test_login2.entity.Funcionario;
+import com.example.test_login2.entity.Medico;
 import com.example.test_login2.entity.Role;
+import com.example.test_login2.repository.MedicoRepository;
 import com.example.test_login2.repository.RoleRepository;
 import com.example.test_login2.repository.FuncionarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,14 +18,18 @@ import java.util.stream.Collectors;
 public class FuncionarioServiceImpl implements FuncionarioService {
 
     private FuncionarioRepository funcionarioRepository;
+
+    private MedicoRepository medicoRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
     public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository,
                                   RoleRepository roleRepository,
+                                  MedicoRepository medicoRepository,
                                   PasswordEncoder passwordEncoder) {
         this.funcionarioRepository = funcionarioRepository;
         this.roleRepository = roleRepository;
+        this.medicoRepository = medicoRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,16 +37,22 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     public void saveUser(FuncionarioDto funcionarioDto) {
         Funcionario funcionario = new Funcionario();
         funcionario.setName(funcionarioDto.getName());
-        funcionario.setName(funcionarioDto.getName());
-        // encrypt the password using spring security
         funcionario.setPassword(passwordEncoder.encode(funcionarioDto.getPassword()));
 
         Role role = roleRepository.findByName(funcionarioDto.getRole());
-        if(role == null){
+        if (role == null) {
             role = checkRoleExist(funcionarioDto.getRole());
         }
         funcionario.setRoles(Arrays.asList(role));
         funcionarioRepository.save(funcionario);
+
+        if (role.getName().equals("ROLE_MEDICO")) {
+            Medico medico = new Medico();
+            medico.setName(funcionario.getName());
+            medico.setPassword(funcionario.getPassword());
+            medico.setFuncionario(funcionario);
+            medicoRepository.save(medico);
+        }
     }
 
     @Override
