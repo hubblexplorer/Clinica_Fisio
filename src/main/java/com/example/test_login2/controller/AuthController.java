@@ -2,10 +2,15 @@ package com.example.test_login2.controller;
 
 
 import com.example.test_login2.dto.FuncionarioDto;
+import com.example.test_login2.dto.PacienteDto;
 import com.example.test_login2.entity.Agenda;
 import com.example.test_login2.entity.Funcionario;
+import com.example.test_login2.entity.Medico;
+import com.example.test_login2.entity.Paciente;
 import com.example.test_login2.repository.AgendaRepository;
+import com.example.test_login2.repository.MedicoRepository;
 import com.example.test_login2.service.FuncionarioService;
+import com.example.test_login2.service.PacienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,11 +31,18 @@ public class AuthController {
 
     private FuncionarioService funcionarioService;
 
+    private PacienteService pacienteService;
+
+    @Autowired
+    private MedicoRepository medicoRepository;
+
     @Autowired
     private AgendaRepository agendaRepository;
 
-    public AuthController(FuncionarioService funcionarioService) {
+    public AuthController(FuncionarioService funcionarioService, MedicoRepository medicoRepository, PacienteService pacienteService) {
         this.funcionarioService = funcionarioService;
+        this.medicoRepository = medicoRepository;
+        this.pacienteService = pacienteService;
 
     }
     // handler method to handle home page request
@@ -66,6 +78,42 @@ public class AuthController {
 
         funcionarioService.saveUser(funcionarioDto);
         return "redirect:/register?success";
+    }
+
+    @GetMapping("/add_paciente")
+    public String showRegistrationFormPaciente(Model model){
+        // create model object to store form data
+        PacienteDto user = new PacienteDto();
+        model.addAttribute("Paciente", user);
+        List<Medico> users = medicoRepository.findAll();
+        model.addAttribute("medicoList", users);
+
+        return "add_paciente";
+    }
+
+    // handler method to handle user registration form submit request
+    @PostMapping("/add_paciente/save")
+    public String registration(@Valid @ModelAttribute("Paciente") PacienteDto pacienteDto,
+                               BindingResult result,
+                               Model model){
+
+        Paciente existingPaciente = pacienteService.findPacienteByName(pacienteDto.getName());
+
+        if(existingPaciente != null && existingPaciente.getName() != null && !existingPaciente.getName().isEmpty()){
+            result.rejectValue("name", null,
+                    "There is already an account registered with the same name");
+        }
+
+
+        if(result.hasErrors()){
+            model.addAttribute("name", pacienteDto);
+            return "/add_paciente";
+        }
+        System.out.println("Aqui");
+
+        pacienteService.savePaciente(pacienteDto);
+
+        return "redirect:/add_paciente?success";
     }
 
     // handler method to handle list of users

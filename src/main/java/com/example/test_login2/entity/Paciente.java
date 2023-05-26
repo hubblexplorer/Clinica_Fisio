@@ -6,23 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="Roles")
-public class Role
-{
+@Table(name = "Pacientes")
+public class Paciente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, unique=true)
+    @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy="roles")
-    private List<Funcionario> funcionarios;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Medicos_id", referencedColumnName = "id")
+    private Medico medico;
 }

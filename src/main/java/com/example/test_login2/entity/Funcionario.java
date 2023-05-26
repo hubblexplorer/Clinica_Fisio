@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="users")
+@Table(name="Funcionarios")
 public class Funcionario
 {
     private static final long serialVersionUID = 1L;
@@ -32,8 +32,8 @@ public class Funcionario
     @Column(nullable=false)
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
-            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
-            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
+            joinColumns={@JoinColumn(name="Funcionarios_id", referencedColumnName="ID")},
+            inverseJoinColumns={@JoinColumn(name="Roles_ID", referencedColumnName="ID")})
     private List<Role> roles = new ArrayList<>();
 
 }

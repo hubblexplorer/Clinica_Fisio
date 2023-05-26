@@ -34,7 +34,8 @@
 <div class="container">
   hola
   <div sec:authorize="hasRole('USER')">Text visible to funcionario.</div>
-  <div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>
+  <div sec:authorize="hasRole('ROLE_ADMIN')">Text visible to admin.</div>
+  <span th:text="${#authentication.getAuthorities()}"></span>
 </div>
 </body>
 </html>

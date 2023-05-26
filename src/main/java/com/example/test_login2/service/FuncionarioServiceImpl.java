@@ -3,8 +3,10 @@ package com.example.test_login2.service;
 import com.example.test_login2.dto.FuncionarioDto;
 import com.example.test_login2.entity.Funcionario;
 import com.example.test_login2.entity.Medico;
+import com.example.test_login2.entity.Rececionista;
 import com.example.test_login2.entity.Role;
 import com.example.test_login2.repository.MedicoRepository;
+import com.example.test_login2.repository.RececionistaRepository;
 import com.example.test_login2.repository.RoleRepository;
 import com.example.test_login2.repository.FuncionarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,14 +25,18 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
+    private RececionistaRepository rececionistaRepository;
+
     public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository,
                                   RoleRepository roleRepository,
                                   MedicoRepository medicoRepository,
+                                  RececionistaRepository rececionistaRepository,
                                   PasswordEncoder passwordEncoder) {
         this.funcionarioRepository = funcionarioRepository;
         this.roleRepository = roleRepository;
         this.medicoRepository = medicoRepository;
         this.passwordEncoder = passwordEncoder;
+        this.rececionistaRepository = rececionistaRepository;
     }
 
     @Override
@@ -52,6 +58,14 @@ public class FuncionarioServiceImpl implements FuncionarioService {
             medico.setPassword(funcionario.getPassword());
             medico.setFuncionario(funcionario);
             medicoRepository.save(medico);
+        }
+
+        if (role.getName().equals("ROLE_RECECIONISTA")) {
+            Rececionista rececionista = new Rececionista();
+            rececionista.setName(funcionario.getName());
+            rececionista.setPassword(funcionario.getPassword());
+            rececionista.setFuncionario(funcionario);
+            rececionistaRepository.save(rececionista);
         }
     }
 

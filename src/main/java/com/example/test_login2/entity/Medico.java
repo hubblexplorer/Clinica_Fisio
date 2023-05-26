@@ -25,7 +25,7 @@ public class Medico {
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "users_id", referencedColumnName = "id")
+    @JoinColumn(name = "Funcionarios_id", referencedColumnName = "id")
     private Funcionario funcionario;
 
 }

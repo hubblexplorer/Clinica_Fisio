@@ -17,7 +17,7 @@ import java.time.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="agenda")
+@Table(name="Agenda")
 public class Agenda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
