@@ -16,6 +16,8 @@ import com.example.test_login2.service.PacienteService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,10 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -145,7 +146,7 @@ public class AuthController {
     }
 
     @GetMapping("/agenda")
-    public String agenda_new_week(Model model,HttpSession session){
+    public String agenda_new_week(Model model,HttpSession session, Authentication authentication){
         Integer offset = null;
         try {
              offset = (int) session.getAttribute("offset");
@@ -153,6 +154,16 @@ public class AuthController {
        catch (Exception e){
             System.out.println("here");
              offset = 0;
+        }
+
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Boolean is_med = false;
+        Medico med = null;
+        // Redirect the user based on their role
+        if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_MEDICO"))) {
+            is_med = true;
+            med = medicoRepository.findByName(authentication.getName()).get(0);
         }
 
 
@@ -169,11 +180,31 @@ public class AuthController {
             CodeList.add("a" + week.DayWeek(a.getDate()) + String.valueOf(a.getTime().getHours()));
         }
 
+
+
+        int i = 0;
+
         for (int day = 2; day <= 6; day++){
             for (int hour = 9; hour <= 17; hour++){
                 String HTMLAtributeName = "a" + String.valueOf(day) + String.valueOf(hour);
-                if (CodeList.contains(HTMLAtributeName))    model.addAttribute(HTMLAtributeName, "X");
-                else                                        model.addAttribute(HTMLAtributeName, " ");
+                if (CodeList.contains(HTMLAtributeName)) {
+                    if (is_med) {
+                        if (AgendaWeek.get(i).getPaciente().getMedico().getId() == med.getId()){
+                            model.addAttribute(HTMLAtributeName, AgendaWeek.get(i).getPaciente().getName());
+                        }
+                        else{
+                            model.addAttribute(HTMLAtributeName, " ");
+                        }
+
+                    }
+                    else {
+                        model.addAttribute(HTMLAtributeName, AgendaWeek.get(i).getPaciente().getName());
+                    }
+                    i++;
+                }
+                else  {
+                    model.addAttribute(HTMLAtributeName, " ");
+                }
             }
         }
 
@@ -230,7 +261,7 @@ public class AuthController {
 
         agendaRepository.save(agenda);
 
-        return "redirect:/add_consulta?success";
+        return "redirect:/agenda/add_consulta?success";
     }
 
 
