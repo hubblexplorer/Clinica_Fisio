@@ -26,16 +26,17 @@
                 <label id="data" th:text="${header}"></label>
                 <button name="new_offset" type="submit" th:value="${offset}+ 1">&gt;</button>
             </form>
+            <a class="nav-link active" aria-current="page" th:href="@{/agenda/add_consulta}">Register</a>
         </div>
         <div id="tablediv">
             <table class="table table-bordered table-hover">
                 <thead class="table-primary">
                     <th></th>
-                    <th>2º</th>
-                    <th>3º</th>
-                    <th>4º</th>
-                    <th>5º</th>
-                    <th>6º</th>
+                    <th>Segunda-feira</th>
+                    <th>Terça-feira</th>
+                    <th>Quarta-feira</th>
+                    <th>Quinta-feira</th>
+                    <th>Sexta-feira</th>
                 </tr>
                 </thead>
                 <tr id="linha" class="table-light">
@@ -110,7 +111,7 @@
                 </tr>
 
                 <tr id="linha" class="table-light">
-                    <th id="hour" class="table-primary">17a:00</th>
+                    <th id="hour" class="table-primary">17:00</th>
                     <th th:text="${a217}"></th>
                     <th th:text="${a317}"></th>
                     <th th:text="${a417}"></th>

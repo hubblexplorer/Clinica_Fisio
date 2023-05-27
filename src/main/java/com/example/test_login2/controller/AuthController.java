@@ -1,6 +1,7 @@
 package com.example.test_login2.controller;
 
 
+import com.example.test_login2.dto.AgendaDto;
 import com.example.test_login2.dto.FuncionarioDto;
 import com.example.test_login2.dto.PacienteDto;
 import com.example.test_login2.entity.Agenda;
@@ -9,6 +10,7 @@ import com.example.test_login2.entity.Medico;
 import com.example.test_login2.entity.Paciente;
 import com.example.test_login2.repository.AgendaRepository;
 import com.example.test_login2.repository.MedicoRepository;
+import com.example.test_login2.repository.PacienteRepository;
 import com.example.test_login2.service.FuncionarioService;
 import com.example.test_login2.service.PacienteService;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,16 +40,23 @@ public class AuthController {
 
     private PacienteService pacienteService;
 
+
+
+
     @Autowired
     private MedicoRepository medicoRepository;
 
     @Autowired
     private AgendaRepository agendaRepository;
 
-    public AuthController(FuncionarioService funcionarioService, MedicoRepository medicoRepository, PacienteService pacienteService) {
+    @Autowired
+    private PacienteRepository pacienteRepository;
+
+    public AuthController(FuncionarioService funcionarioService, MedicoRepository medicoRepository, PacienteService pacienteService, PacienteRepository pacienteRepository) {
         this.funcionarioService = funcionarioService;
         this.medicoRepository = medicoRepository;
         this.pacienteService = pacienteService;
+        this.pacienteRepository = pacienteRepository;
 
     }
     // handler method to handle home page request
@@ -111,7 +123,7 @@ public class AuthController {
             model.addAttribute("name", pacienteDto);
             return "/add_paciente";
         }
-        System.out.println("Aqui");
+
 
         pacienteService.savePaciente(pacienteDto);
 
@@ -183,6 +195,42 @@ public class AuthController {
     public String updateOffset(@RequestParam("new_offset") int offset, HttpSession session) {
         session.setAttribute("offset", offset);
         return "redirect:/agenda?sucess";
+    }
+
+    @GetMapping("/agenda/add_consulta")
+    public String showRegistrationFormConsulta(Model model){
+        // create model object to store form data
+        AgendaDto user = new AgendaDto();
+        model.addAttribute("Agenda", user);
+        List<Paciente> users = pacienteRepository.findAll();
+        model.addAttribute("pacienteList", users);
+
+
+        LocalDate now = LocalDate.now();
+        model.addAttribute("now", now);
+
+
+
+        return "add_consulta";
+    }
+
+    @PostMapping("/agenda/add_consulta/save")
+    public String addConsulta(@Valid @ModelAttribute("Agenda") AgendaDto agendaDto,
+                               BindingResult result,
+                               Model model){
+
+        Agenda agenda = new Agenda();
+        agenda.setPaciente(agendaDto.getPaciente());
+        agenda.setDate(agendaDto.getDate());
+        agenda.setTime(Time.valueOf(agendaDto.getTime()));
+
+        System.out.println(agendaDto.getPaciente().getId());
+        System.out.println(agenda.getDate());
+        System.out.println(agendaDto.getTime());
+
+        agendaRepository.save(agenda);
+
+        return "redirect:/add_consulta?success";
     }
 
 

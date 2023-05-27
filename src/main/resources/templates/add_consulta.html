@@ -19,7 +19,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" th:href="@{/home}">Back</a>
+          <a class="nav-link active" aria-current="page" th:href="@{/agenda}">Back</a>
         </li>
       </ul>
     </div>
@@ -42,25 +42,49 @@
                 method="post"
                 role="form"
                 th:action="@{/agenda/add_consulta/save}"
-                th:object="${Paciente}"
+                th:object="${Agenda}"
         >
           <div class="form-group mb-3">
-            <label class="form-label">Name</label>
+            <label class="form-label">Nome</label>
             <div class="form-group mb-3">
-              <label class="form-label">Medico</label>
-              <br>
-              <select name="Paciente" id="Medico" class="form-control" th:field="*{paciente}">
+              <select name="Paciente" id="Paciente" class="form-control" th:field="*{paciente}" required>
                 <option th:each="paciente : ${pacienteList}" th:value="${paciente.id}" th:text="${paciente.name}"></option>
               </select>
             </div>
           </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Dia</label>
+            <br>
+            <input type="date" name="Dia" id="Dia" class="form-control"  th:field="*{date}" th:attr="min=${now}" oninput="ignoreWeekends()" required>
+          </div>
+
+          <script>
+            function ignoreWeekends() {
+              var input = document.getElementById("Dia");
+              var selectedDate = new Date(input.value);
+
+              if (selectedDate.getDay() === 0) {
+                // If selected date is Sunday, increment it to Monday
+                selectedDate.setDate(selectedDate.getDate() + 1);
+              } else if (selectedDate.getDay() === 6) {
+                // If selected date is Saturday, increment it to Monday
+                selectedDate.setDate(selectedDate.getDate() + 2);
+              }
+
+              var year = selectedDate.getFullYear();
+              var month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+              var day = String(selectedDate.getDate()).padStart(2, '0');
+              var formattedDate = `${year}-${month}-${day}`;
+
+              input.value = formattedDate;
+            }
+          </script>
+
 
           <div class="form-group mb-3">
-            <label class="form-label">Medico</label>
+            <label class="form-label">Hora</label>
             <br>
-            <select name="Medico" id="Medico" class="form-control" th:field="*{medico}">
-              <option th:each="medico : ${medicoList}" th:value="${medico.id}" th:text="${medico.name}"></option>
-            </select>
+            <input type="time" timezone="[[timezone]]" name="Hora" id="Hora" class="form-control" th:field="*{time}" min="09:00" max="18:00" required>
           </div>
 
 

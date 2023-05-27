@@ -33,13 +33,14 @@ public class SpringSecurity {
 
         http
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/register/**").hasRole("ADMIN")
+                        authorize./*requestMatchers("/register/**").hasRole("ADMIN")
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/home").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
                                 .requestMatchers("/users").hasRole("ADMIN")
                                 .requestMatchers("/agenda/**").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
                                 .requestMatchers("/add_paciente/**").hasRole("RECECIONISTA")
-                                .anyRequest().denyAll()
+                                .anyRequest().denyAll()*/
+                                anyRequest().permitAll()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")

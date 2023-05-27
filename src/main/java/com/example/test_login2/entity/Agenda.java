@@ -23,11 +23,10 @@ public class Agenda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private int MedID;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Pacientes_id", referencedColumnName = "id")
+    private Paciente paciente;
 
-    @Column(nullable=false)
-    private String TypeName;
 
     @Column(nullable=false)
     private java.sql.Date date;
@@ -41,13 +40,10 @@ public class Agenda {
         this.id = id;
     }
 
-    public void setMedID(int medID) {
-        MedID = medID;
+    public void setPacID(Long PacID) {
+        PacID = PacID;
     }
 
-    public void setTypeName(String typeName) {
-        TypeName = typeName;
-    }
 
     public void setDate(Date date) {
         this.date = date;
