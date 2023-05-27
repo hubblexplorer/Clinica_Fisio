@@ -11,6 +11,7 @@ import com.example.test_login2.repository.AgendaRepository;
 import com.example.test_login2.repository.MedicoRepository;
 import com.example.test_login2.service.FuncionarioService;
 import com.example.test_login2.service.PacienteService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -129,13 +131,23 @@ public class AuthController {
     public String login(){
         return "login";
     }
-    
+
     @GetMapping("/agenda")
-    public String agenda(Model model){
+    public String agenda_new_week(Model model,HttpSession session){
+        Integer offset = null;
+        try {
+             offset = (int) session.getAttribute("offset");
+        }
+       catch (Exception e){
+            System.out.println("here");
+             offset = 0;
+        }
+
+
+
         AgendaWeek week = new AgendaWeek();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        List<Agenda> AgendaWeek = agendaRepository.findAgendaByDateBetween(java.sql.Date.valueOf(dateFormat.format(week.FirstWeekDay())), java.sql.Date.valueOf(dateFormat.format(week.LastWeekDay())));
-        System.out.println(AgendaWeek);
+        List<Agenda> AgendaWeek = agendaRepository.findAgendaByDateBetween(java.sql.Date.valueOf(dateFormat.format(week.FirstWeekDay(offset))), java.sql.Date.valueOf(dateFormat.format(week.LastWeekDay(offset))));
         ArrayList<Date> DayList = new ArrayList<>();
         ArrayList<Time> TimeList = new ArrayList<>();
         ArrayList<String> CodeList = new ArrayList<>();
@@ -153,10 +165,25 @@ public class AuthController {
             }
         }
 
-        System.out.println(DayList);
+        model.addAttribute("header", java.sql.Date.valueOf(dateFormat.format(week.FirstWeekDay(offset))) + " - " +  java.sql.Date.valueOf(dateFormat.format(week.LastWeekDay(offset))));
+        model.addAttribute("offset", offset);
+
+
+
+        /*System.out.println(DayList);
         System.out.println(TimeList);
-        System.out.println(CodeList);
+        System.out.println(CodeList);*/
 
         return "agenda";
     }
+
+
+
+    @PostMapping("/agenda/update_offset")
+    public String updateOffset(@RequestParam("new_offset") int offset, HttpSession session) {
+        session.setAttribute("offset", offset);
+        return "redirect:/agenda?sucess";
+    }
+
+
 }

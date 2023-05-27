@@ -15,6 +15,24 @@ public class AgendaWeek {
         Date LastDay = Date.from(instant);
         return LastDay;
     }
+    public Date LastWeekDay(int outset) {
+        LocalDate data = LocalDate.now();
+        LocalDate ultimoDiaSemana = data.with(DayOfWeek.SUNDAY);
+
+        if (outset < 0) {
+            ultimoDiaSemana = ultimoDiaSemana.minusWeeks(Math.abs(outset));
+        } else if (outset > 0) {
+            ultimoDiaSemana = ultimoDiaSemana.plusWeeks(outset);
+        }
+
+        LocalDateTime localDateTime = ultimoDiaSemana.atTime(LocalTime.MAX);
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+        Instant instant = zonedDateTime.toInstant();
+        Date lastDay = Date.from(instant);
+        return lastDay;
+    }
+
 
     public Date FirstWeekDay(){
         LocalDate data = LocalDate.now();
@@ -25,6 +43,24 @@ public class AgendaWeek {
         Instant instant = zonedDateTime.toInstant();
         Date FristDay = Date.from(instant);
         return FristDay;
+    }
+
+    public Date FirstWeekDay(int outset) {
+        LocalDate data = LocalDate.now();
+        LocalDate primeiroDiaSemana = data.with(DayOfWeek.MONDAY);
+
+        if (outset < 0) {
+            primeiroDiaSemana = primeiroDiaSemana.minusWeeks(Math.abs(outset));
+        } else if (outset > 0) {
+            primeiroDiaSemana = primeiroDiaSemana.plusWeeks(outset);
+        }
+
+        LocalDateTime localDateTime = primeiroDiaSemana.atStartOfDay();
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+        Instant instant = zonedDateTime.toInstant();
+        Date firstDay = Date.from(instant);
+        return firstDay;
     }
 
     public Date DayNow(){

@@ -5,14 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
 </head>
 <body>
     <div id="agenda">
         <div id="select">
-            <button><</button>
-            <label id="data">xx / xx / xxxx</label>
-            <button>></button>
+            <form method="POST" th:action="@{/agenda/update_offset}">
+                <button name="new_offset" type="submit" th:value="${offset} -1">&lt;</button>
+                <label id="data" th:text="${header}"></label>
+                <button name="new_offset" type="submit" th:value="${offset}+ 1">&gt;</button>
+            </form>
         </div>
+        <a class="nav-link active" aria-current="page" th:href="@{/agenda/add_consulta}">Adicionar consulta</a>
         <div id="tablediv">
             <table>
                 <tr>

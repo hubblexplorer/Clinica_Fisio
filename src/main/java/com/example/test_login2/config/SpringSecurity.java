@@ -6,12 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.Collection;
 
 @Configuration
 @EnableWebSecurity
@@ -34,14 +37,28 @@ public class SpringSecurity {
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/home").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
                                 .requestMatchers("/users").hasRole("ADMIN")
-                                .requestMatchers("/agenda").hasRole("RECECIONISTA")
+                                .requestMatchers("/agenda/**").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
                                 .requestMatchers("/add_paciente/**").hasRole("RECECIONISTA")
                                 .anyRequest().denyAll()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/home", true)
+                                .successHandler((request, response, authentication) -> {
+                                    // Get the user's authorities/roles
+                                    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+                                    // Redirect the user based on their role
+                                    if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+                                        response.sendRedirect("/users");
+                                    } else if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_MEDICO"))) {
+                                        response.sendRedirect("/agenda");
+                                    } else if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_RECECIONISTA"))) {
+                                        response.sendRedirect("/agenda");
+                                    } else {
+                                        response.sendRedirect("/default/home");
+                                    }
+                                })
                                 .permitAll()
                 ).logout(
                         logout -> logout
