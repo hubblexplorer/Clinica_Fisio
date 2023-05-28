@@ -35,11 +35,12 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").hasRole("ADMIN")
                                 .requestMatchers("/").permitAll()
-                                .requestMatchers("/home").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
-                                .requestMatchers("/users").hasRole("ADMIN")
+                                .requestMatchers("/users/**").hasRole("ADMIN")
                                 .requestMatchers("/agenda/**").hasAnyRole("ADMIN","MEDICO","RECECIONISTA")
                                 .requestMatchers("/add_paciente/**").hasRole("RECECIONISTA")
+                                .requestMatchers("/paciente/**").hasAnyRole("MEDICO","ADMIN")
                                 .anyRequest().denyAll()
+
 
                 ).formLogin(
                         form -> form
@@ -57,7 +58,7 @@ public class SpringSecurity {
                                     } else if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_RECECIONISTA"))) {
                                         response.sendRedirect("/agenda");
                                     } else {
-                                        response.sendRedirect("/default/home");
+                                        response.sendRedirect("/");
                                     }
                                 })
                                 .permitAll()

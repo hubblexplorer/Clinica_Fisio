@@ -1,14 +1,8 @@
 package com.example.test_login2.service;
 
 import com.example.test_login2.dto.FuncionarioDto;
-import com.example.test_login2.entity.Funcionario;
-import com.example.test_login2.entity.Medico;
-import com.example.test_login2.entity.Rececionista;
-import com.example.test_login2.entity.Role;
-import com.example.test_login2.repository.MedicoRepository;
-import com.example.test_login2.repository.RececionistaRepository;
-import com.example.test_login2.repository.RoleRepository;
-import com.example.test_login2.repository.FuncionarioRepository;
+import com.example.test_login2.entity.*;
+import com.example.test_login2.repository.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +21,24 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     private RececionistaRepository rececionistaRepository;
 
+    private PacienteRepository pacienteRepository;
+
+    private AgendaRepository agendaRepository;
+
     public FuncionarioServiceImpl(FuncionarioRepository funcionarioRepository,
                                   RoleRepository roleRepository,
                                   MedicoRepository medicoRepository,
                                   RececionistaRepository rececionistaRepository,
+                                  PacienteRepository pacienteRepository,
+                                  AgendaRepository agendaRepository,
                                   PasswordEncoder passwordEncoder) {
         this.funcionarioRepository = funcionarioRepository;
         this.roleRepository = roleRepository;
         this.medicoRepository = medicoRepository;
         this.passwordEncoder = passwordEncoder;
         this.rececionistaRepository = rececionistaRepository;
+        this.pacienteRepository = pacienteRepository;
+        this.agendaRepository = agendaRepository;
     }
 
     @Override
@@ -69,6 +71,42 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         }
     }
 
+    @Override
+    public void deleteUser(String funcionarioDto) {
+        Funcionario funcionario = funcionarioRepository.findByName(funcionarioDto);
+        Role role= null;
+        if (funcionario != null) {
+          role= funcionario.getRoles().get(0); // Supondo que existe apenas uma role para cada funcionário
+            System.out.println(role.getId());
+            if (role.getName().equals("ROLE_MEDICO")) {
+                role.getFuncionarios().remove(funcionario);
+                Medico medico = medicoRepository.findByFuncionario(funcionario);
+
+                if (medico != null) {
+                    List<Paciente> p = pacienteRepository.findAllByMedico(medico);
+                    for (int i = 0; i < p.size(); i++){
+                        List<Agenda> a = agendaRepository.findAllByPaciente(p.get(i));
+                        for (int j = 0; j < a.size(); j++){
+                            agendaRepository.delete(a.get(j));
+                        }
+                        pacienteRepository.delete(p.get(i));
+                    }
+                    medicoRepository.delete(medico);
+                }
+            }
+
+            if (role.getName().equals("ROLE_RECECIONISTA")) {
+                role.getFuncionarios().remove(funcionario);
+                Rececionista rececionista = rececionistaRepository.findByFuncionario(funcionario);
+                if (rececionista != null) {
+                    rececionistaRepository.delete(rececionista);
+                }
+            }
+
+
+
+        }
+    }
     @Override
     public Funcionario findUserByName(String name) {
         return funcionarioRepository.findByName(name);

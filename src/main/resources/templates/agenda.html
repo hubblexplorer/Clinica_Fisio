@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Agenda</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Agenda</title>
-    <style>
+    <!--<style>
+
         body {
             font-family: serif;
             background: linear-gradient(-45deg, #cbe6c0, #b0d79f, #b8e6d3, #d3eee1);
@@ -16,21 +16,184 @@
             animation: gradient 15s ease infinite;
             height: 100vh;
         }
+        -->
+    <style >
+        body {
+            font-family: serif;
+            background: linear-gradient(-45deg, #cbe6c0, #b0d79f, #b8e6d3, #d3eee1);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+        }
+        .title{
+            padding-top: 40px;
+            padding-bottom: 30px;
+        }
+        .tbody{
+            background: aliceblue;
+        }
+        .bemvindo{
+            position: relative;
+            margin-left: 25px;
+            margin-top: 30px;
+            font-size: 20px;
+            text-decoration-style: solid;
+            font-weight: bold;
+        }
+        .user{
+            margin-left: 35px;
+            padding-top: 10px;
+            font-size: 23px;
+        }
+        .btn {
+            position: relative;
+            margin-left: 80%;
+        }
+        .custom-btn {
+            width: 200px;
+            height: 40px;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 25px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 500;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+            7px 7px 20px 0px rgba(0,0,0,.1),
+            4px 4px 5px 0px rgba(0,0,0,.1);
+            outline: none;
+        }
+        .btn {
+            background: #075c55;
+            border: none;
+            z-index: 1;
+        }
+        .btn:after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 0;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            border-radius: 5px;
+            background-color: #77aaff;
+            background-image: linear-gradient(315deg, #b0d79f 0%, #77aaff 74%);
+            box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+            7px 7px 20px 0px rgba(0,0,0,.1),
+            4px 4px 5px 0px rgba(0,0,0,.1);
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            color: #000;
+        }
+        .btn:hover:after {
+            top: auto;
+            bottom: 0;
+            height: 100%;
+        }
+        .btn:active {
+            top: 2px;
+        }
+
+        .week {
+            position: relative;
+            margin-left: 45%;
+            padding-bottom: 30px;
+        }
+        .table{
+            text-align: center;
+        }
+        .table-columns{
+            background: #aed1e2;
+        }
+        #hour {
+            background: #aed1e2;
+        }
+
+        #data {
+            background: aliceblue;
+            padding: 4px;
+            font-family: serif solid bold;
+            font-size: 18px;
+
+        }
+
+
+
     </style>
+
 </head>
 <body>
-    <div id="agenda">
-        <div id="select">
-            <form method="POST" th:action="@{/agenda/update_offset}">
-                <button name="new_offset" type="submit" th:value="${offset} -1">&lt;</button>
-                <label id="data" th:text="${header}"></label>
-                <button name="new_offset" type="submit" th:value="${offset}+ 1">&gt;</button>
-            </form>
-            <a class="nav-link active" aria-current="page" th:href="@{/agenda/add_consulta}">Register</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/agenda}">Agenda</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <div sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/users}">users</a>
+                    </li>
+                </div>
+                <div sec:authorize="hasRole('RECECIONISTA')">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/agenda/add_consulta}">Adicionar consulta</a>
+                    </li>
+                </div>
+                <div sec:authorize="hasRole('RECECIONISTA')">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/add_paciente}">Adicionar paciente</a>
+                    </li>
+
+                </div>
+                <div sec:authorize="hasRole('MEDICO')">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/paciente}">Pacientes</a>
+                    </li>
+
+                </div>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
+                </li>
+            </ul>
         </div>
+    </div>
+</nav>
+
+
+
+
+
+<div class="bemvindo">
+    Bem-Vindo,
+    <div class="user" sec:authorize="hasRole('RECECIONISTA')">Rececionista.</div>
+    <div class="user" sec:authorize="hasRole('MEDICO')">Médico</div>
+</div>
+
+<div id="select" class="week">
+    <form method="POST" th:action="@{/agenda/update_offset}">
+        <button class="dataseg" name="new_offset" type="submit" th:value="${offset} -1">&lt;&lt;</button>
+        <label id="data" th:text="${header}"></label>
+        <button class="dataseg" name="new_offset" type="submit" th:value="${offset}+ 1">&gt;&gt;</button>
+    </form>
+</div>
+    <style>
+        .dataseg{
+            background: aliceblue;
+        }
+    </style>
+</div>
+    <div id="agenda">
         <div id="tablediv">
             <table class="table table-bordered table-hover">
-                <thead class="table-primary">
+                <thead class="table-columns">
                     <th></th>
                     <th>Segunda-feira</th>
                     <th>Terça-feira</th>
@@ -40,7 +203,7 @@
                 </tr>
                 </thead>
                 <tr id="linha" class="table-light">
-                    <th id="hour" class="table-primary">9:00</th>
+                    <th id="hour" class="table-columns">9:00</th>
                     <th th:text="${a29}"></th>
                     <th th:text="${a39}"></th>
                     <th th:text="${a49}"></th>
@@ -49,7 +212,7 @@
                 </tr>
 
                 <tr class="table-light">
-                    <th id="hour" class="table-primary">10:00</th>
+                    <th id="hour" class="table-columns">10:00</th>
                     <th th:text="${a210}"></th>
                     <th th:text="${a310}"></th>
                     <th th:text="${a410}"></th>
@@ -58,7 +221,7 @@
                 </tr>
 
                 <tr class="table-light">
-                    <th id="hour" class="table-primary">11:00</th>
+                    <th id="hour" class="table-columns">11:00</th>
                     <th th:text="${a211}"></th>
                     <th th:text="${a311}"></th>
                     <th th:text="${a411}"></th>
@@ -66,7 +229,7 @@
                     <th th:text="${a611}"></th>
                 </tr>
                 <tr class="table-light">
-                    <th id="hour" class="table-primary">12:00</th>
+                    <th id="hour" class="table-columns">12:00</th>
                     <th th:text="${a212}"></th>
                     <th th:text="${a312}"></th>
                     <th th:text="${a412}"></th>
@@ -75,7 +238,7 @@
                 </tr>
 
                 <tr id="linha" class="table-light">
-                    <th id="hour" class="table-primary">13:00</th>
+                    <th id="hour" class="table-columns">13:00</th>
                     <th th:text="${a213}"></th>
                     <th th:text="${a313}"></th>
                     <th th:text="${a413}"></th>
@@ -84,7 +247,7 @@
                 </tr>
 
                 <tr id="linha" class="table-light">
-                    <th id="hour" class="table-primary">14:00</th>
+                    <th id="hour" class="table-columns">14:00</th>
                     <th th:text="${a214}"></th>
                     <th th:text="${a314}"></th>
                     <th th:text="${a414}"></th>
@@ -93,7 +256,7 @@
                 </tr>
 
                 <tr id="linha" class="table-light">
-                    <th id="hour" class="table-primary">15:00</th>
+                    <th id="hour" class="table-columns">15:00</th>
                     <th th:text="${a215}"></th>
                     <th th:text="${a315}"></th>
                     <th th:text="${a415}"></th>
@@ -102,7 +265,7 @@
                 </tr>
 
                 <tr id="linha" class="table-light">
-                    <th id="hour" class="table-primary">16:00</th>
+                    <th id="hour" class="table-columns">16:00</th>
                     <th th:text="${a216}"></th>
                     <th th:text="${a316}"></th>
                     <th th:text="${a416}"></th>
@@ -111,7 +274,7 @@
                 </tr>
 
                 <tr id="linha" class="table-light">
-                    <th id="hour" class="table-primary">17:00</th>
+                    <th id="hour" class="table-columns">17:00</th>
                     <th th:text="${a217}"></th>
                     <th th:text="${a317}"></th>
                     <th th:text="${a417}"></th>
@@ -119,10 +282,12 @@
                     <th th:text="${a617}"></th>
                 </tr>
             </table>
-            <div id="List">
-                
-            </div>
+
+
+            <a class="custom-btn btn" aria-current="page" sec:authorize="hasRole('RECECIONISTA')" th:href="@{/agenda/add_consulta}">Nova consulta</a>
+
         </div>
     </div>
+
 </body>
 </html>

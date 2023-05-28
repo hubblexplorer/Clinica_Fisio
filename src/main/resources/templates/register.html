@@ -4,60 +4,153 @@
 >
 <head>
   <meta charset="UTF-8">
-  <title>Registration and Login System</title>
+  <title>Adicionar utilizador</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
         rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
         crossorigin="anonymous">
+  <style>
+    body {
+      font-family: serif;
+      background: linear-gradient(-45deg, #cbe6c0, #b0d79f, #b8e6d3, #d3eee1);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      height: 100vh;
+    }
+
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+
+    }
+    .card{
+      background: aliceblue;
+    }
+
+
+
+    .card-body{
+
+      text-align: left;
+      color: black;
+
+    }
+    .login{
+      font-size: 35px;
+      text-align: center;
+      color: #333330;
+    }
+    .container{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%)
+    }
+    button {
+      margin: 20px;
+    }
+    .custom-btn {
+      width: 130px;
+      height: 40px;
+      color: #fff;
+      border-radius: 5px;
+      padding: 10px 25px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 500;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
+      box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+      7px 7px 20px 0px rgba(0,0,0,.1),
+      4px 4px 5px 0px rgba(0,0,0,.1);
+      outline: none;
+    }
+    .btn {
+      background: #075c55;
+      border: none;
+      z-index: 1;
+    }
+    .btn:after {
+      position: absolute;
+      content: "";
+      width: 100%;
+      height: 0;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      border-radius: 5px;
+      background-color: #b0d79f;
+      background-image: linear-gradient(315deg, #b0d79f 0%, #f6fc9c 74%);
+      box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+      7px 7px 20px 0px rgba(0,0,0,.1),
+      4px 4px 5px 0px rgba(0,0,0,.1);
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      color: #000;
+    }
+    .btn:hover:after {
+      top: auto;
+      bottom: 0;
+      height: 100%;
+    }
+    .btn:active {
+      top: 2px;
+    }
+
+  </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/home}">Home</a>
+    <a class="navbar-brand" th:href="@{/users}">Back</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" th:href="@{/users}">Back</a>
-        </li>
-      </ul>
-    </div>
-  </div>
 </nav>
 <br /><br /><br />
 <div class="container">
-  <div class="row col-md-8 offset-md-2">
+  -<div class="row">
+  <div class="col-md-8 offset-md-2">
     <div class="card">
-      <div class="card-header">
-        <h2 class="text-center">Registration</h2>
-      </div>
-      <div th:if="${param.success}">
-        <div class="alert alert-info">
-          You have successfully registered our app!
-        </div>
-      </div>
-      <div class="card-body">
-        <form
-                method="post"
-                role="form"
-                th:action="@{/register/save}"
-                th:object="${Funcionario}"
-        >
-          <div class="form-group mb-3">
-            <label class="form-label">Name</label>
-            <input
-                    class="form-control"
-                    id="firstName"
-                    name="firstName"
-                    placeholder="Enter first name"
-                    th:field="*{name}"
-                    type="text"
-            />
-            <p th:errors = "*{name}" class="text-danger"
-               th:if="${#fields.hasErrors('name')}"></p>
+      <div class="card-heander">
+        <h2 class="login">Novo utilizador</h2>
+
+        <div th:if="${param.success}">
+          <div class="alert alert-info">
+            Novo utizador registado.
           </div>
+        </div>
+        <div class="card-body">
+          <form
+                  method="post"
+                  role="form"
+                  th:action="@{/register/save}"
+                  th:object="${Funcionario}"
+          >
+            <div class="form-group mb-3">
+              <label class="form-label">Nome</label>
+              <input
+                      class="form-control"
+                      id="firstName"
+                      name="firstName"
+                      placeholder="Insira o nome"
+                      th:field="*{name}"
+                      type="text"
+              />
+              <p th:errors = "*{name}" class="text-danger"
+                 th:if="${#fields.hasErrors('name')}"></p>
+            </div>
 
           <div class="form-group mb-3">
             <label class="form-label">Password</label>
@@ -65,7 +158,7 @@
                     class="form-control"
                     id="password"
                     name="password"
-                    placeholder="Enter password"
+                    placeholder="Insira password"
                     th:field="*{password}"
                     type="password"
             />
@@ -83,9 +176,10 @@
 
 
           <div class="form-group">
-            <button class="btn btn-primary" type="submit">Register</button>
+            <button class="custom-btn btn" type="submit">Registar</button>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>

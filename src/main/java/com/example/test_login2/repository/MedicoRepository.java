@@ -1,5 +1,7 @@
 package com.example.test_login2.repository;
 
+import com.example.test_login2.dto.FuncionarioDto;
+import com.example.test_login2.entity.Funcionario;
 import com.example.test_login2.entity.Medico;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +16,8 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
 
     Optional<Medico> findById(Long id);
 
-    Medico findByFuncionario_Id(Long funcionarioId);
+    Medico findByFuncionario(Funcionario funcionario);
+
 
 }
 

@@ -21,10 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -53,8 +50,6 @@ public class AuthController {
     @Autowired
     private PacienteRepository pacienteRepository;
     
-    @Autowired
-    private faturacaoRepository faturacaoRepo;
 
     public AuthController(FuncionarioService funcionarioService, MedicoRepository medicoRepository, PacienteService pacienteService, PacienteRepository pacienteRepository) {
         this.funcionarioService = funcionarioService;
@@ -139,6 +134,8 @@ public class AuthController {
     public String users(Model model){
         List<FuncionarioDto> users = funcionarioService.findAllUsers();
         model.addAttribute("Funcionario", users);
+        int f = -1;
+        model.addAttribute("delFunc", f);
         return "users";
     }
 
@@ -155,7 +152,6 @@ public class AuthController {
              offset = (int) session.getAttribute("offset");
         }
        catch (Exception e){
-            System.out.println("here");
              offset = 0;
         }
 
@@ -215,11 +211,6 @@ public class AuthController {
         model.addAttribute("offset", offset);
 
 
-
-        /*System.out.println(DayList);
-        System.out.println(TimeList);
-        System.out.println(CodeList);*/
-
         return "agenda";
     }
 
@@ -258,24 +249,50 @@ public class AuthController {
         agenda.setDate(agendaDto.getDate());
         agenda.setTime(Time.valueOf(agendaDto.getTime()));
 
-        System.out.println(agendaDto.getPaciente().getId());
-        System.out.println(agenda.getDate());
-        System.out.println(agendaDto.getTime());
-
         agendaRepository.save(agenda);
 
         return "redirect:/agenda/add_consulta?success";
     }
 
-    @GetMapping("/faturacao")
-    public String faturacao(Model model){
-        AgendaWeek week = new AgendaWeek();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        List<Agenda> AgendaToday = agendaRepository.findByDate(java.sql.Date.valueOf(dateFormat.format(week.DayNow())));
-        int preco = faturacaoRepo.findAll().get(0).getValor();
-        for (Agenda a : AgendaToday)
-            model.addAttribute("a" + a.getTime().getHours(), "Paciente id " + a.getPaciente().getId() + "  " + a.getPaciente().getName()  + " --> " + preco);
-        return "faturacao";
+    @GetMapping("/users/delete_funcionario/{name}")
+    public String deleteFuncionario(@PathVariable(value = "name") String name) {
+        System.out.println("here");
+        System.out.println(name);
+        funcionarioService.deleteUser(name);
+
+        return "redirect:/users?sucess";
     }
+
+    @GetMapping("/paciente")
+    public String pacientes(Model model){
+        List<Paciente> users = pacienteRepository.findAll();
+        model.addAttribute("Pacientes", users);
+
+        return "paciente";
+    }
+    @GetMapping("/paciente/delete/{name}")
+    public String deletePaciente(@PathVariable(value = "name") String name) {
+        Paciente p = pacienteRepository.findByName(name);
+        p.setMedico(null); // Remove the association between Paciente and Medico
+        pacienteRepository.save(p);
+        p = pacienteRepository.findByName(name);
+        pacienteRepository.delete(p);
+
+
+        return "redirect:/paciente?sucess";
+    }
+
+    @PostMapping("/paciente/save/{id}")
+    public String savePaciente(@PathVariable("id") Long id, @RequestParam("observacoes") String observacoes) {
+        System.out.println("here");
+        System.out.println(observacoes);
+        Paciente paciente = pacienteRepository.findByid(id);
+        paciente.setObservacoes(observacoes);
+        pacienteRepository.save(paciente);
+
+        return "redirect:/paciente?success";
+    }
+
+
 
 }

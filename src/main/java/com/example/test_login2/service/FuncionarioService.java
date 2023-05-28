@@ -8,6 +8,8 @@ import java.util.List;
 public interface FuncionarioService {
     void saveUser(FuncionarioDto funcionarioDto);
 
+    void deleteUser(String nome);
+
     Funcionario findUserByName(String name);
 
     List<FuncionarioDto> findAllUsers();
