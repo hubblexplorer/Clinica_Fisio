@@ -52,6 +52,9 @@ public class AuthController {
 
     @Autowired
     private PacienteRepository pacienteRepository;
+    
+    @Autowired
+    private faturacaoRepository faturacaoRepo;
 
     public AuthController(FuncionarioService funcionarioService, MedicoRepository medicoRepository, PacienteService pacienteService, PacienteRepository pacienteRepository) {
         this.funcionarioService = funcionarioService;
@@ -264,5 +267,15 @@ public class AuthController {
         return "redirect:/agenda/add_consulta?success";
     }
 
+    @GetMapping("/faturacao")
+    public String faturacao(Model model){
+        AgendaWeek week = new AgendaWeek();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<Agenda> AgendaToday = agendaRepository.findByDate(java.sql.Date.valueOf(dateFormat.format(week.DayNow())));
+        int preco = faturacaoRepo.findAll().get(0).getValor();
+        for (Agenda a : AgendaToday)
+            model.addAttribute("a" + a.getTime().getHours(), "Paciente id " + a.getPaciente().getId() + "  " + a.getPaciente().getName()  + " --> " + preco);
+        return "faturacao";
+    }
 
 }
